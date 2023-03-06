@@ -3,7 +3,7 @@ import time
 import PoseModule as pm
 
 def main():
-    cap = cv2.VideoCapture()
+    cap = cv2.VideoCapture(0)
     pTime  = 0
     detector = pm.poseDetector()
     while True:
@@ -22,5 +22,5 @@ def main():
         cv2.waitKey(1)
 
 
-if __name__ == "__main":
+if __name__ == "__main__":
     main()
