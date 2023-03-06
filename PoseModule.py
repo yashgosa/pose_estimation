@@ -4,6 +4,7 @@ import time
 import mediapipe as mp
 
 class poseDetector():
+    #initializing
     def __init__(self, mode=False, model_complexity=1, upBody=False, smooth=True,
                  detectionCon=0.5, trackCon=0.5):
         self.mode = mode
@@ -18,22 +19,30 @@ class poseDetector():
                                      self.detectionCon, self.trackCon)
 
     def findPose(self, img, draw=True):
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        self.results = self.pose.process(imgRGB)
-        if self.results.pose_landmarks:
+        """
+        This function takes an image process it saves the landmarks in the var self.results and if landmarks are
+        detected then draws lines between them and then returns this new image
+        """
+        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) #Changing the color
+        self.results = self.pose.process(imgRGB) #processing the image and saving the landmarks in `self.results`
+        if self.results.pose_landmarks: #if lm present
             if draw:
                 self.mpDraw.draw_landmarks(img, self.results.pose_landmarks,
-                                           self.mpPose.POSE_CONNECTIONS)
+                                           self.mpPose.POSE_CONNECTIONS) #Draws the connections between landmarks
         return img
 
     def findPosition(self, img, draw = True):
-        self.lmList = []
-        if self.results.pose_landmarks:
+        """
+        takes the processed image as input and saves the pixcek values of landnarks in the list and draws circles on
+        them if draw = true
+        """
+        self.lmList = [] #Initializing the lmList
+        if self.results.pose_landmarks: #if landmarks are present then save the value of thier pixcels in lmList
             for id, lm in enumerate(self.results.pose_landmarks.landmark):
                 h, w, c = img.shape
                 cx, cy = int(lm.x*w), int(lm.y*h)
                 self.lmList.append([id, cx, cy])
-                if draw:
+                if draw: #if `draw == True` then draws the circles on those landmarks
                     cv2.circle(img, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
         return self.lmList
 
